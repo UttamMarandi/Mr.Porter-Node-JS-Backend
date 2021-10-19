@@ -23,4 +23,23 @@ router.post("/register", async (req, res) => {
   }
 });
 
+//LOGIN
+router.post("/login", async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.body.username }); //async process
+    //In case of register we are saving the client input data. But in case of login we are first trying to find the username in the db using findOne. findOne works good as username is uinque and we are trying to match the username with the req.username
+    !user && res.status(401).json("Wrong Credentials"); //if user not found return response
+    const hashedPassword = CryptoJS.AES.decrypt(
+      user.password,
+      process.env.PASS_SEC
+    ); //hashed password
+    const password = hashedPassword.toString(CryptoJS.enc.Utf8); //pass parameter
+    password != req.body.password && res.status(401).send("Wrong Credentials"); //if password do no match return rresponse
+
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 module.exports = router;
