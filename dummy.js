@@ -41,3 +41,24 @@ const CartSchema = mongoose.Schema(
 );
 
 module.exports = mongoose.model("User", CartSchema); //exporting the model
+
+const accessToken = jwt.sign(
+  {
+    id: user._id,
+    isAdmin: user.isAdmin,
+  },
+  process.env.JWT_SEC,
+  { expiresIn: "3d" }
+);
+const accessToken = jwt.sign(
+  {
+    //we need these properties for admin users
+    id: user_id,
+    isAdmin: user.isAdmin,
+  },
+  process.env.JWT_SEC,
+  { expiresIn: "3d" } //after 3 days we need to login again
+);
+
+if (req.user.id === req.params.id) {
+}

@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const router = require("express").Router();
 const CryptoJS = require("crypto-js");
+const jwt = require("jsonwebtoken");
 
 //REGISTER
 router.post("/register", async (req, res) => {
@@ -33,10 +34,23 @@ router.post("/login", async (req, res) => {
       user.password,
       process.env.PASS_SEC
     ); //hashed password
-    const password = hashedPassword.toString(CryptoJS.enc.Utf8); //pass parameter
-    password != req.body.password && res.status(401).send("Wrong Credentials"); //if password do no match return rresponse
+    const OriginalPassword = hashedPassword.toString(CryptoJS.enc.Utf8); //pass parameter
+    OriginalPassword != req.body.password &&
+      res.status(401).send("Wrong Credentials"); //if password do no match return response
 
-    res.status(200).json(user);
+    const { password, ...others } = user._doc; //spread operator , send everything except password to the client ._doc b.c mongo db store data in this folder
+    //access Token
+    const accessToken = jwt.sign(
+      {
+        //we need these properties for admin users
+        id: user._id,
+        isAdmin: user.isAdmin,
+      },
+      process.env.JWT_SEC,
+      { expiresIn: "3d" } //after 3 days we need to login again
+    );
+
+    res.status(200).json({ ...others, accessToken }); //along with data we are passing the accessToken
   } catch (err) {
     res.status(500).json(err);
   }
