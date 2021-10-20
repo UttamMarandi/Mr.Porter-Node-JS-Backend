@@ -28,4 +28,22 @@ const verifyTokenAndAuthorization = (req, res, next) => {
   });
 };
 
-module.exports = { verifyToken, verifyTokenAndAuthorization }; //using object b.c we will be creating multiple funcitons
+//for order.js and product.js only users can make changes to these files.
+
+const verifyTokenAndAdmin = (req, res, next) => {
+  verifyToken(req, res, () => {
+    //after verifyToken has run , run this method
+    if (req.user.isAdmin) {
+      //is user is admin move next()
+      next();
+    } else {
+      res.status(403).json("YOu are not allowed to do that");
+    }
+  });
+};
+
+module.exports = {
+  verifyToken,
+  verifyTokenAndAuthorization,
+  verifyTokenAndAdmin,
+}; //using object b.c we will be creating multiple funcitons
