@@ -3,6 +3,7 @@ const User = require("../models/User");
 const {
   verifyToken,
   verifyTokenAndAuthorization,
+  verifyTokenAndAdmin,
 } = require("../routes/verifyToken");
 const { route } = require("./auth");
 
@@ -39,6 +40,55 @@ router.delete("/:id", verifyTokenAndAuthorization, async (req, res) => {
     res.status(200).json("User has been deleted...");
   } catch (err) {
     res.status(500).json(err);
+  }
+});
+
+//GET USER
+router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
+  //only the admin has access to user props
+  try {
+    const user = await User.findById(req.params.id);
+    const { password, ...others } = user._doc; //send everything except password
+    res.status(200).json(others);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+//GET ALL USERS
+
+router.get("/", verifyTokenAndAdmin, async (req, res) => {
+  //"api/users" only route for all users
+  //only the admin has access to user props
+
+  try {
+    const query = req.query.new; //in url anything after ? is a query
+    const users = query
+      ? await User.find().sort({ _id: -1 }).limit(5) //if new is set to true , then list in desc order using _id : -1
+      : await User.find();
+    // const users = await User.find();
+    // const { password, ...others } = user._doc; //send everything except password
+    res.status(200).json(users);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+//get user stats
+router.get("/stats", verifyTokenAndAdmin, async (req, res) => {
+  const date = new Date();
+  const lastYear = new Date(date.setFullYear(date.getFullYear() - 1)); //get the last year date wrt to date and set the date as last year
+  try {
+    const data = await User.aggregate([
+      //aggregate mongodb method
+      { $match: { createdAt: { $gte: lastYear } } }, //basically give me all the matches where createdAt  greater than last year.
+      { $project: { month: { $month: "$createdAt" } } }, //
+      { $group: { _id: "$month", total: { $sum: 1 } } }, //_id returns the month it is created , total returns the no of entries for that month
+      //fc
+    ]);
+    res.status(200).json(data);
+  } catch (err) {
+    res.status(500).json(`User stats error ${err}`);
   }
 });
 
