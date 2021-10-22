@@ -22,7 +22,7 @@ router.post("/", verifyTokenAndAdmin, async (req, res) => {
 //as my understanding the put method allows product to update something in db let's say username. so the req.body will contain the new username. req.headers will contain the token to validate the user.
 //the response from server will contain the upadated user with updated name
 
-router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
+router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
   try {
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,

@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const Order = require("../models/Order");
+const Cart = require("../models/Cart");
 const {
   verifyToken,
   verifyTokenAndAuthorization,
@@ -8,11 +8,11 @@ const {
 
 //CREATE
 router.post("/", verifyToken, async (req, res) => {
-  const newOrder = new Order(req.body);
+  const newCart = new Cart(req.body);
 
   try {
-    const savedOrder = await newOrder.save(); //saves the product to db
-    res.status(200).json(savedOrder);
+    const savedCart = await newCart.save(); //saves the product to db
+    res.status(200).json(savedCart);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -22,16 +22,16 @@ router.post("/", verifyToken, async (req, res) => {
 //as my understanding the put method allows product to update something in db let's say username. so the req.body will contain the new username. req.headers will contain the token to validate the user.
 //the response from server will contain the upadated user with updated name
 
-router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
+router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
   try {
-    const updatedOrder = await Cart.findByIdAndUpdate(
+    const updatedCart = await Cart.findByIdAndUpdate(
       req.params.id,
       {
         $set: req.body,
       },
       { new: true }
     ); //
-    res.status(200).json(updatedOrder);
+    res.status(200).json(updatedCart);
   } catch (err) {
     res.status(500).json(err);
   }
