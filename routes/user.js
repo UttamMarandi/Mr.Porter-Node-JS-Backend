@@ -4,8 +4,8 @@ const {
   verifyToken,
   verifyTokenAndAuthorization,
   verifyTokenAndAdmin,
-} = require("../routes/verifyToken");
-const { route } = require("./auth");
+} = require("./verifyToken");
+// const { route } = require("./auth");
 
 //Update User
 //as my understanding the put method allows user to update something in db let's say username. so the req.body will contain the new username. req.headers will contain the token to validate the user.

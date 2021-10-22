@@ -4,7 +4,9 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const userRoute = require("./routes/user");
 const authRoute = require("./routes/auth");
-dotenv.config(); //required
+const productRoute = require("./routes/product");
+
+dotenv.config(); //required for env variables to work
 
 mongoose
   .connect(process.env.MONGO_URL)
@@ -21,6 +23,8 @@ app.use(express.json()); //to allow server to receive any json file
 app.use("/api/users", userRoute);
 
 app.use("/api/auth", authRoute);
+
+app.use("/api/products", productRoute);
 
 app.get("/", (req, res) => {
   console.log("Hello");

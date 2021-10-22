@@ -6,7 +6,7 @@ const ProductSchema = mongoose.Schema(
     title: { type: String, required: true }, //username is of type string , it is required and should be unique
     desc: { type: String, required: true },
     img: { type: String, required: true },
-    categories: { type: String, required: true },
+    categories: { type: Array, required: true },
     size: { type: String, required: true },
     color: { type: String, required: true },
     price: { type: String, required: true },
@@ -20,4 +20,4 @@ const ProductSchema = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("User", ProductSchema); //exporting the model
+module.exports = mongoose.model("Product", ProductSchema); //exporting the model

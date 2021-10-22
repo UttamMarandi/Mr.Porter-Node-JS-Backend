@@ -62,3 +62,31 @@ const accessToken = jwt.sign(
 
 if (req.user.id === req.params.id) {
 }
+
+//All Products
+
+router.get("/", async (req, res) => {
+  //"api/Products" only route for all users
+  //only the admin has access to user props
+  const qNew = req.query.new;
+  const qCategory = req.query.category;
+  //in url anything after ? is a query
+
+  try {
+    let products;
+    if (qNew) {
+      products = await Product.find().sort({ createdAt: -1 }).limit(1);
+    } else if (qCategory) {
+      products = await Product.find({
+        categories: {
+          $in: [qCategory],
+        },
+      });
+    } else {
+      products = await Product.find();
+    }
+    res.status(200).json(products);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
