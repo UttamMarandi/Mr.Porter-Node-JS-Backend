@@ -6,7 +6,7 @@ const CartSchema = mongoose.Schema(
     userId: { type: String, required: true, unique: true }, //username is of type string , it is required and should be unique
     products: [
       {
-        prosuctId: { type: String },
+        productId: { type: String },
         quantity: { type: Number, default: 1 },
       },
     ],
@@ -16,4 +16,4 @@ const CartSchema = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("User", CartSchema); //exporting the model
+module.exports = mongoose.model("Cart", CartSchema); //exporting the model
