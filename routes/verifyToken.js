@@ -6,7 +6,7 @@ const verifyToken = (req, res, next) => {
   if (authHeader) {
     const token = authHeader.split(" ")[1]; //we have added Beared and space by ourselves , so we need to split to get the original token
     jwt.verify(token, process.env.JWT_SEC, (err, user) => {
-      if (err) res.status(403).json("Token is not valide");
+      if (err) res.status(403).json("Token is not valid");
       else {
         req.user = user; //we are adding a new object to the content we are sending to server. similar to req.body , req.header
         next();
